@@ -35,23 +35,22 @@
     .qr-section {
       margin-bottom: 28px;
     }
-   .qr-section img {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 2px solid #e3e6ed;
-  background: #f3f5fa;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(150,170,200,0.10);
-  transition: transform 0.15s;
-}
-
+    .qr-section img {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #e3e6ed;
+      background: #f3f5fa;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(150,170,200,0.10);
+      transition: transform 0.15s;
+    }
     .qr-section img:hover {
       transform: scale(1.03) rotate(-2deg);
     }
-    .cta-btn {
+    .cta-btn, .reveal-btn {
       display: inline-block;
       background: linear-gradient(90deg, #3e7aff 0%, #2046d3 100%);
       color: #fff;
@@ -63,28 +62,42 @@
       transition: background 0.18s, box-shadow 0.18s;
       margin-top: 16px;
       font-size: 1.02rem;
+      border: none;
+      cursor: pointer;
     }
-    .cta-btn:hover {
+    .cta-btn:hover, .reveal-btn:hover {
       background: #294bb0;
       box-shadow: 0 6px 16px rgba(32, 52, 88, 0.19);
+    }
+    .cta-btn {
+      margin-top: 14px;
+    }
+    .hidden {
+      display: none;
     }
     @media (max-width:600px) {
       .container {padding: 20px; max-width: 98vw;}
       h1 { font-size: 1.3rem;}
-      .qr-section img { width:130px; height:130px;}
+      .qr-section img { max-width: 140px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Make Your Payment</h1>
-    <p>Scan the QR code below to pay.<br>After payment, click the button to submit information and payment screenshot.</p>
+    <p>Scan the QR code below to pay.<br>
+    After payment, click the button below to submit your information and payment screenshot.</p>
     <div class="qr-section">
-      <!-- Replace the src below with the URL/filename of your QR code image -->
       <img src="QR.png" alt="Scan QR Code to Pay">
     </div>
-    <!-- Replace the URL below with your Google Form link -->
-    <a class="cta-btn" href="https://forms.gle/your-google-form-link" target="_blank" rel="noopener">Submit Info &amp; Screenshot</a>
+    <button class="reveal-btn" onclick="showForm()">I have paid</button>
+    <br>
+    <a id="formlink" class="cta-btn hidden" href="https://forms.gle/your-google-form-link" target="_blank" rel="noopener">Submit Info &amp; Screenshot</a>
   </div>
+  <script>
+    function showForm() {
+      document.getElementById('formlink').classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
