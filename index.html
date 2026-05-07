@@ -1,105 +1,541 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Payment Portal</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #091413 0%, #285A48 100%);
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
+      background: #0f0f13;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      overflow-x: hidden;
+      position: relative;
     }
-    .container {
-      max-width: 480px;
-      background: #4A90A4;
-      margin: 48px auto 0 auto;
-      padding: 32px 24px 24px 24px;
-      box-shadow: 0 6px 48px rgba(32,40,100,0.08);
-      border-radius: 16px;
-      text-align: center;
+
+    /* ── Animated background orbs ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(110px);
+      opacity: 0.18;
+      pointer-events: none;
+      animation: orbFloat linear infinite;
     }
-    h1 {
-      margin-bottom: 12px;
-      font-weight: 700;
-      color: #FFBCD9;
-      font-size: 2rem;
+
+    .bg-orb-1 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, #6366f1, transparent 70%);
+      top: -180px;
+      left: -180px;
+      animation-duration: 20s;
     }
-    p {
-      color: #FFF5F7;
-      margin-bottom: 24px;
+
+    .bg-orb-2 {
+      width: 380px;
+      height: 380px;
+      background: radial-gradient(circle, #8b5cf6, transparent 70%);
+      bottom: -120px;
+      right: -120px;
+      animation-duration: 25s;
+      animation-direction: reverse;
     }
-    .qr-section {
-      margin-bottom: 28px;
+
+    .bg-orb-3 {
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      top: 55%;
+      left: 65%;
+      opacity: 0.1;
+      animation-duration: 30s;
     }
-    .qr-section img {
-      width: 100%;
-      max-width: 320px;
-      height: auto;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid #050026;
-      background: #100024;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 12px rgba(150,170,200,0.10);
-      transition: transform 0.15s;
+
+    @keyframes orbFloat {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+      }
+
+      25% {
+        transform: translate(40px, -30px) scale(1.05);
+      }
+
+      50% {
+        transform: translate(20px, 50px) scale(0.97);
+      }
+
+      75% {
+        transform: translate(-30px, 20px) scale(1.03);
+      }
+
+      100% {
+        transform: translate(0px, 0px) scale(1);
+      }
     }
-    .qr-section img:hover {
-      transform: scale(1.03) rotate(-2deg);
+
+    /* ── Floating particles canvas ── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
     }
-    .cta-btn, .reveal-btn {
-      display: inline-block;
-      background: linear-gradient(90deg, #3e7aff 0%, #2046d3 100%);
-      color: #fff;
+
+    /* ── Entrance animations ── */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .badge {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.72rem;
       font-weight: 600;
-      padding: 12px 32px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      animation: fadeSlideUp 0.5s 0.05s ease both;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #6366f1;
+      box-shadow: 0 0 6px #6366f1;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 6px #6366f1;
+      }
+
+      50% {
+        opacity: 0.3;
+        box-shadow: 0 0 2px #6366f1;
+      }
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 540px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 40px 32px 36px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+        0 32px 64px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(99, 102, 241, 0.06);
+      animation: fadeSlideUp 0.5s 0.1s ease both;
+      overflow: hidden;
+    }
+
+    /* Animated glow pulse on card */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 25px;
+      background: transparent;
+      border: 1px solid transparent;
+      z-index: -1;
+      animation: cardGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes cardGlow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.1), 0 0 60px rgba(99, 102, 241, 0.05);
+      }
+
+      50% {
+        box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), 0 0 80px rgba(168, 85, 247, 0.12);
+      }
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+      animation: fadeSlideUp 0.5s 0.15s ease both;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      animation: fadeSlideUp 0.5s 0.2s ease both;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      margin-bottom: 28px;
+      animation: fadeIn 0.5s 0.25s ease both;
+    }
+
+    /* ── QR wrapper with floating animation ── */
+    .qr-wrapper {
+      display: inline-block;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+        0 0 40px rgba(99, 102, 241, 0.25);
+      margin-bottom: 28px;
+      animation: fadeSlideUp 0.5s 0.3s ease both, qrFloat 5s 1s ease-in-out infinite;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .qr-wrapper:hover {
+      box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 0 60px rgba(99, 102, 241, 0.35);
+      animation-play-state: paused, paused;
+    }
+
+    @keyframes qrFloat {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .qr-wrapper img {
+      display: block;
+      width: 420px;
+      height: 420px;
+      object-fit: contain;
       border-radius: 8px;
-      text-decoration: none;
-      box-shadow: 0 2px 6px rgba(32, 52, 88, 0.07);
-      transition: background 0.18s, box-shadow 0.18s;
-      margin-top: 16px;
-      font-size: 1.02rem;
+    }
+
+    .qr-label {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+      animation: fadeSlideUp 0.5s 0.35s ease both;
+    }
+
+    /* ── Reveal button with shimmer sweep ── */
+    .reveal-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 28px;
+      border-radius: 12px;
       border: none;
       cursor: pointer;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+      transition: all 0.25s ease;
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+      animation: fadeSlideUp 0.5s 0.4s ease both;
     }
-    .cta-btn:hover, .reveal-btn:hover {
-      background: #294bb0;
-      box-shadow: 0 6px 16px rgba(32, 52, 88, 0.19);
+
+    .reveal-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: skewX(-20deg);
+      animation: shimmer 2.8s 2s ease-in-out infinite;
     }
+
+    @keyframes shimmer {
+      0% {
+        left: -100%;
+      }
+
+      60%,
+      100% {
+        left: 160%;
+      }
+    }
+
+    .reveal-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 10px 32px rgba(99, 102, 241, 0.55);
+      background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+    }
+
+    .reveal-btn:active {
+      transform: translateY(0) scale(0.99);
+    }
+
+    .reveal-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA button ── */
     .cta-btn {
-      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      letter-spacing: 0.01em;
     }
+
+    .cta-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: rgba(99, 102, 241, 0.6);
+      color: #c7d2fe;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.25);
+    }
+
+    .cta-btn svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    /* Slide-down reveal for form link */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 80px;
+      }
+    }
+
+    .cta-btn.visible {
+      animation: slideDown 0.4s ease forwards;
+    }
+
     .hidden {
       display: none;
     }
-    @media (max-width:600px) {
-      .container {padding: 20px; max-width: 98vw;}
-      h1 { font-size: 1.3rem;}
-      .qr-section img { max-width: 140px; }
+
+    .footer-note {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      font-size: 0.73rem;
+      color: #334155;
+      letter-spacing: 0.03em;
+      animation: fadeIn 1s 1s ease both;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 28px 20px 24px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .qr-wrapper img {
+        width: 300px;
+        height: 300px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
+
+  <canvas id="particles"></canvas>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+
+  <div class="badge">Secure Payment Portal</div>
+
+  <div class="card">
     <h1>Make Your Payment</h1>
-    <p>Scan the QR code below to pay.<br>
-    After payment, click the button below to submit your information and payment screenshot.</p>
-    <div class="qr-section">
+    <p class="subtitle">Scan the QR code below using any UPI app to complete your payment. Once done, click the button
+      to submit your details.</p>
+
+    <div class="divider"></div>
+
+    <div class="qr-wrapper">
       <img src="QR.png" alt="Scan QR Code to Pay">
     </div>
-    <button class="reveal-btn" onclick="showForm()">I have paid</button>
-    <br>
-    <a id="formlink" class="cta-btn hidden" href="https://forms.gle/m2Tc2YKkgXqkF9tr9" target="_blank" rel="noopener">Submit Info &amp; Screenshot</a>
+
+    <p class="qr-label">Scan with Google Pay &bull; PhonePe &bull; Paytm &bull; Any UPI</p>
+
+    <button class="reveal-btn" onclick="showForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M9 12l2 2 4-4" />
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      I Have Paid
+    </button>
+
+    <a id="formlink" class="cta-btn hidden" href="https://forms.gle/m2Tc2YKkgXqkF9tr9" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+      </svg>
+      Submit Info &amp; Screenshot
+    </a>
   </div>
+
+  <p class="footer-note">Your payment information is handled securely.</p>
+
   <script>
     function showForm() {
-      document.getElementById('formlink').classList.remove('hidden');
+      const link = document.getElementById('formlink');
+      link.classList.remove('hidden');
+      link.classList.add('visible');
+      setTimeout(() => link.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 50);
     }
+
+    /* ── Floating particles ── */
+    (function () {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles;
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function randomParticle() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.5 + 0.3,
+          dx: (Math.random() - 0.5) * 0.3,
+          dy: (Math.random() - 0.5) * 0.3,
+          alpha: Math.random() * 0.5 + 0.1,
+          color: Math.random() > 0.5 ? '99,102,241' : '168,85,247'
+        };
+      }
+
+      function init() {
+        resize();
+        particles = Array.from({length: 80}, randomParticle);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+          ctx.fill();
+
+          p.x += p.dx;
+          p.y += p.dy;
+
+          if (p.x < 0 || p.x > W) p.dx *= -1;
+          if (p.y < 0 || p.y > H) p.dy *= -1;
+        });
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => {resize();});
+      init();
+      draw();
+    })();
   </script>
 </body>
+
 </html>
-
-
